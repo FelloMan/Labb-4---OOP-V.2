@@ -6,14 +6,13 @@ namespace Labb_4___OOP_V._2
     public class Restaurant : Program
     {
         private List<MenuItem> _menu;        // Representerar menyn
-        private Queue<Order> _orderQueue;   // Hanterar beställningar
+        private Queue<Order> _orderQueue = new Queue<Order>(); // Hanterar beställningar
         private Queue<Order> _orders;
 
         public Restaurant()
         {
             _menu = new List<MenuItem>();
-            _orders = new Queue<Order>();
-            _orderQueue = new Queue<Order>();
+            _orderQueue = new Queue<Order>(); // Only one queue        
         }
 
         // Lägger till en ny maträtt i menyn
@@ -33,19 +32,21 @@ namespace Labb_4___OOP_V._2
         }
 
         // Lägger till en ny beställning i kön
+
         public void CreateOrder(Order order)
         {
-            _orders.Enqueue(order);
-            Console.WriteLine($"Order created: {order}");
+            _orderQueue.Enqueue(order); // Add the order to the queue
+            Console.WriteLine($"Order {order.GetOrderId()} has been added."); // Custom message
         }
+
 
         // Hanterar den första beställningen i kön
         public void HandleOrder()
-        {
-            if (_orders.Count > 0)
+        {           
+            if (_orderQueue.Count > 0)
             {
-                Order order = _orders.Dequeue();
-                Console.WriteLine($"Handled order: {order}");
+                Order handledOrder = _orderQueue.Dequeue();
+                Console.WriteLine($"Order {handledOrder.GetOrderId()} is ready.");
             }
             else
             {
@@ -53,53 +54,74 @@ namespace Labb_4___OOP_V._2
             }
         }
 
-        // Visar alla beställningar i kön
-         
+
         public void ShowOrders()
         {
-            int orderNumber = 1;
+            Console.WriteLine(); // Print an empty line for spacing
+            int orderNumber = 1; // Counter for order numbers
+            Console.WriteLine("Current Orders:");
+
+            if (_orderQueue.Count == 0)
+            {
+                Console.WriteLine("No orders in the queue.");
+                return; // Exit early if there are no orders
+            }
+
             foreach (var order in _orderQueue)
             {
                 Console.WriteLine($"Order {orderNumber}:");
                 decimal total = 0;
 
-                // Hämta menyobjekt via getter-metoden
                 foreach (var item in order.GetOrderItems())
                 {
-                    Console.WriteLine($"1 st {item.Name}");
+                    Console.WriteLine($"1 st {item.Name} - {item.Price:C}");
                     total += item.Price;
                 }
 
-                Console.WriteLine($"Summa: {total:C}");
-
-                // Hämta bordnummer via getter-metoden
-                Console.WriteLine($"For Table number {order.GetTableNumber()}");
-                Console.WriteLine();
+                Console.WriteLine($"Total: {total:C}");
+                Console.WriteLine($"For Table Number: {order.GetTableNumber()}");
+                Console.WriteLine(); // Spacing between orders
                 orderNumber++;
             }
         }
 
+
+
+
         // Visar beställningen som är näst i kön
         public void ShowNextOrder()
-        {
-            if (_orders.Count > 0)
+        {      
+            if (_orderQueue.Count > 0)
             {
-                Order nextOrder = _orders.Peek();
+                Order nextOrder = _orderQueue.Peek();
                 Console.WriteLine($"Next order: {nextOrder}");
             }
             else
             {
                 Console.WriteLine("No orders in the queue.");
             }
+            Console.WriteLine();
         }
+
 
         // Visar antalet beställningar i kön
         public void ShowOrderCount()
         {
-            Console.WriteLine($"Number of orders in the queue: {_orders.Count}");
+            Console.WriteLine();
+            if (_orderQueue.Count == 0)
+            {
+                Console.WriteLine("No new orders in queue.");
+            }
+            else
+            {
+                Console.WriteLine($"Number of orders in the queue: {_orderQueue.Count}");
+            }
+            Console.WriteLine();
         }
+
         public int GetOrderCount()
         {
+            Console.WriteLine();
             return _orderQueue.Count;
         }
 
